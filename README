@@ -1,0 +1,35 @@
+
+Tool for dumping floating-point numbers in their native
+representation.
+
+Did you know that 0.1 can't be represented exactly in
+IEEE floating point?  Or maybe you know this at an abstract
+level, but don't know what it looks like concretely?
+
+This simple tool will dump a floating-point number in its
+native format.
+
+$ ./dumpfp 0.1
+double precision (IEEE 64-bit):
+         val = 0x3fb999999999999a
+        sign = 0x0
+    exponent = 0x3fb (-4)
+ significand = 999999999999a (between 1.6000000000000000 and 1.6000000000000001)
+
+  1.6000000000000000 * 2**-4 ~ 0.1
+
+$ ./dumpfp 0.5
+double precision (IEEE 64-bit):
+         val = 0x3fe0000000000000
+        sign = 0x0
+    exponent = 0x3fe (-1)
+ significand = 0 (1.0)
+
+  1.0 * 2**-1 ~ 0.5
+
+$ ./dumpfp nan
+double precision (IEEE 64-bit):
+         val = 0x7ff8000000000000
+        sign = 0x0
+    exponent = 0x7ff (NaN or Infinity)
+ significand = 8000000000000 (non-zero indicates NaN)
