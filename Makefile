@@ -1,3 +1,4 @@
 
-dumpfp: dumpfp.c
-	$(CC) -o dumpfp dumpfp.c -Wall -O3 -lm
+CXX=clang
+dumpfp: dumpfp.cc
+	$(CXX) -o dumpfp dumpfp.cc -Wall -O3 -lm -lgmpxx -lgmp
