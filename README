@@ -7,29 +7,92 @@ IEEE floating point?  Or maybe you know this at an abstract
 level, but don't know what it looks like concretely?
 
 This simple tool will dump a floating-point number in its
-native format.
+native format.  It will let you quickly determine what
+numbers can and cannot be represented, and see all details
+of their internal format and value calculation.
 
-$ ./dumpfp 0.1
-double precision (IEEE 64-bit):
-         val = 0x3fb999999999999a
-        sign = 0x0
-    exponent = 0x3fb (-4)
- significand = 999999999999a (between 1.6000000000000000 and 1.6000000000000001)
-
-  1.6000000000000000 * 2**-4 ~ 0.1
+Here is some sample output:
 
 $ ./dumpfp 0.5
-double precision (IEEE 64-bit):
-         val = 0x3fe0000000000000
-        sign = 0x0
-    exponent = 0x3fe (-1)
- significand = 0 (1.0)
+Single Precision (IEEE 32-bit):
+           raw = 0x3f000000
+          sign = 0x0
+      exponent = 0x7e (-1)
+   significand = 0x0
 
-  1.0 * 2**-1 ~ 0.5
+   VALUE CALCULATION =
+       significand   (1 + 0/2^0  (exactly 1.0))
+     * 2^exponent    (2^-1)
+     = VALUE         (1/2^1  (exactly 0.5))
+
+Double Precision (IEEE 64-bit):
+           raw = 0x3fe0000000000000
+          sign = 0x0
+      exponent = 0x3fe (-1)
+   significand = 0x0
+
+   VALUE CALCULATION =
+       significand   (1 + 0/2^0  (exactly 1.0))
+     * 2^exponent    (2^-1)
+     = VALUE         (1/2^1  (exactly 0.5))
+
+$ ./dumpfp 0.1
+Single Precision (IEEE 32-bit):
+           raw = 0x3dcccccd
+          sign = 0x0
+      exponent = 0x7b (-4)
+   significand = 0x4ccccd
+
+   VALUE CALCULATION =
+       significand   (1 + 5033165/2^23  (between 1.6000000 and 1.6000001))
+     * 2^exponent    (2^-4)
+     = VALUE         (13421773/2^27  (between 0.100000001 and 0.100000002))
+
+Double Precision (IEEE 64-bit):
+           raw = 0x3fb999999999999a
+          sign = 0x0
+      exponent = 0x3fb (-4)
+   significand = 0x999999999999a
+
+   VALUE CALCULATION =
+       significand   (1 + 1351079888211149/2^51  (between 1.6000000000000000 and 1.6000000000000001))
+     * 2^exponent    (2^-4)
+     = VALUE         (3602879701896397/2^55  (between 0.10000000000000000 and 0.10000000000000001))
+
+$ ./dumpfp 1e30
+Single Precision (IEEE 32-bit):
+           raw = 0x7149f2ca
+          sign = 0x0
+      exponent = 0xe2 (99)
+   significand = 0x49f2ca
+
+   VALUE CALCULATION =
+       significand   (1 + 2423141/2^22  (between 1.5777218 and 1.5777219))
+     * 2^exponent    (2^99)
+     = VALUE         (exactly 1000000015047466219876688855040)
+
+Double Precision (IEEE 64-bit):
+           raw = 0x46293e5939a08cea
+          sign = 0x0
+      exponent = 0x462 (99)
+   significand = 0x93e5939a08cea
+
+   VALUE CALCULATION =
+       significand   (1 + 1300913865115253/2^51  (between 1.5777218104420236 and 1.5777218104420237))
+     * 2^exponent    (2^99)
+     = VALUE         (exactly 1000000000000000019884624838656)
 
 $ ./dumpfp nan
-double precision (IEEE 64-bit):
-         val = 0x7ff8000000000000
-        sign = 0x0
-    exponent = 0x7ff (NaN or Infinity)
- significand = 8000000000000 (non-zero indicates NaN)
+Single Precision (IEEE 32-bit):
+           raw = 0x7fc00000
+          sign = 0x0
+      exponent = 0xff (NaN or Infinity)
+   significand = 400000 (non-zero indicates NaN)
+
+
+Double Precision (IEEE 64-bit):
+           raw = 0x7ff8000000000000
+          sign = 0x0
+      exponent = 0x7ff (NaN or Infinity)
+   significand = 8000000000000 (non-zero indicates NaN)
+
