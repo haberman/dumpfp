@@ -13,12 +13,6 @@
 
 using namespace std;
 
-mpz_class log10ceil(mpz_class x) {
-  mpz_class ret = 10;
-  while (ret < x) ret *= 10;
-  return ret;
-}
-
 mpz_class bitat(int bit) { return mpz_class(1) << bit; }
 mpz_class mask(int bits) { return bitat(bits) - 1; }
 
@@ -30,18 +24,20 @@ void dumpfp(mpz_class whole, mpz_class numer, int denom_lg2) {
     denom_lg2--;
   }
 
-  mpz_class product = numer * log10ceil(denom);
+  mpz_class digits = 10;
+again:
+  mpz_class product = numer * digits;
   mpz_class fraction = product / denom;
   mpz_class product2 = fraction * denom;
+  if (product2 != product) {
+    digits *= 10;
+    goto again;
+  }
 
   if (whole > 0)
     cout << whole << " + ";
   cout << numer << "/2^" << denom_lg2;
-  if (product2 == product)
-    cout << "  (exactly " << whole << "." << fraction << ")";
-  else
-    cout << "  (between " << whole << "." << fraction << " and "
-                          << whole << "." << (fraction + 1) << ")";
+  cout << "  (" << whole << "." << fraction << ")";
 }
 
 void dumpfp2(mpz_class raw, int sig_bits, int exp_bits) {
@@ -82,7 +78,7 @@ void dumpfp2(mpz_class raw, int sig_bits, int exp_bits) {
     cout << "     = VALUE         (";
 
     if (exp2 >= sig_bits) {
-      cout << "exactly " << (sig2 << (exp2 - sig_bits));
+      cout << (sig2 << (exp2 - sig_bits));
     } else {
       int split = sig_bits - exp2;
       mpz_class whole = sig2 >> split;
