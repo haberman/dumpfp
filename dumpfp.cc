@@ -18,12 +18,15 @@ mpz_class mask(int bits) { return bitat(bits) - 1; }
 
 void dumpfp(mpz_class whole, mpz_class numer, int denom_lg2) {
   mpz_class denom = bitat(denom_lg2);
+
+  // Reduce the fraction for nicer display.
   while ((numer & 0x1) == 0 && (denom & 0x1) == 0) {
     numer >>= 1;
     denom >>= 1;
     denom_lg2--;
   }
 
+  // Pick the fewest number of digits that will precisely represent the value.
   mpz_class digits = 10;
 again:
   mpz_class product = numer * digits;
@@ -85,12 +88,14 @@ void dumpfp2(mpz_class raw, int sig_bits, int exp_bits) {
       mpz_class frac = sig2 - (whole << split);
       dumpfp(whole, frac, split);
     }
-    cout << ")";
+    cout << ")\n";
   }
 
-  cout << "\n\n";
+  cout << "\n";
 }
 
+// Gets an integer value corresponding to the given raw bytes.
+// The currently will only work on a little-endian machine.
 mpz_class getraw(void *val, size_t size) {
   unsigned char bytes[128];
   memcpy(bytes, val, size);
