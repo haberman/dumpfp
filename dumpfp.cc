@@ -38,8 +38,12 @@ again:
   }
 
   if (whole > 0)
-    cout << whole << " + ";
-  cout << numer << "/2^" << denom_lg2;
+    cout << whole;
+  if (whole > 0 && numer > 0)
+    cout << " + ";
+  if (numer > 0)
+    cout << numer << "/2^" << denom_lg2;
+
   cout << "  (" << whole << "." << fraction << ")";
 }
 
@@ -100,7 +104,7 @@ mpz_class getraw(void *val, size_t size) {
   unsigned char bytes[128];
   memcpy(bytes, val, size);
   mpz_class raw(0);
-  for (int i = 0; i < size; i++) {
+  for (size_t i = 0; i < size; i++) {
     raw *= 256;
     raw += bytes[size-i-1];
   }
