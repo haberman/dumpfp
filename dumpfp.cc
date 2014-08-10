@@ -27,6 +27,7 @@ void dumpfp(mpz_class whole, mpz_class numer, int denom_lg2) {
   }
 
   // Pick the fewest number of digits that will precisely represent the value.
+  int n = 1;
   mpz_class digits = 10;
 again:
   mpz_class product = numer * digits;
@@ -34,6 +35,7 @@ again:
   mpz_class product2 = fraction * denom;
   if (product2 != product) {
     digits *= 10;
+    n += 1;
     goto again;
   }
 
@@ -44,7 +46,7 @@ again:
   if (numer > 0)
     cout << numer << "/2^" << denom_lg2;
 
-  cout << "  (" << whole << "." << fraction << ")";
+  gmp_printf("  (%Zd.%.*Zd)", whole.get_mpz_t(), n, fraction.get_mpz_t());
 }
 
 void dumpfp2(mpz_class raw, int sig_bits, int exp_bits) {
