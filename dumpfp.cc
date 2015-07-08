@@ -1,5 +1,3 @@
-// Author: Josh Haberman (jhaberman@gmail.com)
-// This code is in the public domain.
 
 #include <inttypes.h>
 #include <math.h>
